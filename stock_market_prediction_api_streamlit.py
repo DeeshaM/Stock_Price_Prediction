@@ -31,7 +31,7 @@ nltk.download('punkt')
 nltk.download("stopwords")
 from nltk.corpus import stopwords
 stop_words=stopwords.words('english')
-from nltk.stem import WordNetLemmatizer
+#from nltk.stem import WordNetLemmatizer
 import spacy
 #from collections import Counter
 nlp = spacy.load('en_core_web_sm')
