@@ -6,12 +6,12 @@ from sklearn.preprocessing import MinMaxScaler
 from datetime import date, timedelta
 
 #Libraries for nse and bse data collection
-from nsepy import get_history
+# from nsepy import get_history
 from nsetools import Nse
 import yfinance as yf
 
 #libraires for visualisation
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 3})
 
@@ -31,7 +31,7 @@ from nltk.corpus import stopwords
 stop_words=stopwords.words('english')
 from nltk.stem import WordNetLemmatizer
 import spacy
-from collections import Counter
+#from collections import Counter
 #nlp = spacy.load('en_core_web_sm')
 nlp = spacy.load(r'C:\Users\Admin\anaconda3\Lib\site-packages\en_core_web_sm\en_core_web_sm-3.0.0\ner')
 
