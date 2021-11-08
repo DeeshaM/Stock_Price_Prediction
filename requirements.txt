@@ -1,4 +1,5 @@
 spacy==3.0.6
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz#egg=en_core_web_sm
 numpy>=1.14.0
 plotly==4.14.3
 nsepy==0.8
