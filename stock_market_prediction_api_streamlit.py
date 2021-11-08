@@ -34,8 +34,8 @@ stop_words=stopwords.words('english')
 from nltk.stem import WordNetLemmatizer
 import spacy
 #from collections import Counter
-#nlp = spacy.load('en_core_web_sm')
-nlp = spacy.load(r'C:\Users\Admin\anaconda3\Lib\site-packages\en_core_web_sm\en_core_web_sm-3.0.0\ner')
+nlp = spacy.load('en_core_web_sm')
+#nlp = spacy.load(r'C:\Users\Admin\anaconda3\Lib\site-packages\en_core_web_sm\en_core_web_sm-3.0.0\ner')
 
 #-----------------------------------------------------------------------------------------
 #Getting list of stocks from nse
