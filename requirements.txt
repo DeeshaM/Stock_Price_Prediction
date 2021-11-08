@@ -1,5 +1,5 @@
 spacy==3.0.6
-numpy==1.19.2
+numpy>=1.14.0
 plotly==4.14.3
 nsepy==0.8
 nltk==3.5
