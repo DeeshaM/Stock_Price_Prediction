@@ -13,4 +13,4 @@ tensorflow-cpu==2.5.0
 vaderSentiment==3.3.2
 autopep8==1.5.4
 ipykernel==5.3.4
-sklearn==0.24.2
+sklearn==0.0
