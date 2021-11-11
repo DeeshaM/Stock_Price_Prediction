@@ -44,7 +44,7 @@ nlp = spacy.load('en_core_web_sm')
 
 #-----------------------------------------------------------------------------------------
 #Getting list of stocks from nse
-#@st.cache
+@st.cache
 def nsestocklist():
     nse = Nse()
     all_stock_codes = nse.get_stock_codes()
@@ -55,13 +55,13 @@ def nsestocklist():
 
 #Downlaod NSE data for specific company
 
-#@st.cache
+@st.cache
 def load_data(comp_name):
     data = yf.download(comp_name, "2016-1-1", date.today())
     return data
 #-----------------------------------------------------------------------------------------
 #52 week high Price Calculation
-#@st.cache
+@st.cache
 def highprice(df):
     start_date = date.today() - timedelta(365)
     year_data = df["High"].loc[(df.index).date >= start_date]
@@ -69,14 +69,14 @@ def highprice(df):
     return high_price
 
 #52 week Low Price Calculation
-#@st.cache
+@st.cache
 def lowprice(df):
     start_date = date.today() - timedelta(365)
     year_data = df["Low"].loc[(df.index).date >= start_date]
     low_price = min(year_data)
     return low_price
 
-#@st.cache
+@st.cache
 def stockinformation(selected_stock):
     stock_info = yf.Ticker(selected_stock).info
     return stock_info
@@ -92,13 +92,14 @@ def pctchange(df, n):
     profit_data.round(2)
     return profit_data
 
+st.cache
 def color_negative_red(val):
     color = 'red' if val < 0 else 'green'
     return 'color: %s' % color
 
 #-----------------------------------------------------------------------------------------
 #Data Preparation for LSTM model
-#@st.cache
+@st.cache
 def datapreparation(data_scaled):
     
     time_step = 30
@@ -119,7 +120,7 @@ def datapreparation(data_scaled):
     return x_train, y_train
 #-----------------------------------------------------------------------------------------
 #LSTM Model Building
-#@st.cache
+@st.cache
 def model_building_prediction(neuron1, dropout_rate, x_train, y_train, epochs, batch_size, data_scaled, scalar, no_of_days_of_prediction):
     from numpy.random import seed
     seed(1)
@@ -163,7 +164,7 @@ def model_building_prediction(neuron1, dropout_rate, x_train, y_train, epochs, b
 #-----------------------------------------------------------------------------------------
 
 #To generate future date list excluding saturdays, sundays and govt holidays
-#@st.cache
+@st.cache
 def daterange(no_of_days_of_prediction):
     datelist = []
     i = 1
@@ -176,7 +177,7 @@ def daterange(no_of_days_of_prediction):
     return datelist
 
 #Forecasted and recent values df to generate figure
-#@st.cache
+@st.cache
 def forecastedfigure(train_df, predicted_df):
     forecast_df = pd.concat([train_df["Close"].iloc[-100:], predicted_df["Predicted Closing Price"]], axis=1)
     forecast_df.rename(columns={"Close":"Closing Price", "Predicted Closing Price": "Predicted Future CP"}, inplace=True)
@@ -184,7 +185,7 @@ def forecastedfigure(train_df, predicted_df):
 
 #-----------------------------------------------------------------------------------------
 #Function to extract stock tweets
-#@st.cache
+@st.cache
 def get_tweets(company_name):
     currect_date = date.today()
     # Creating list to append tweet data to
@@ -200,6 +201,7 @@ def get_tweets(company_name):
 
 #-----------------------------------------------------------------------------------------
 #Sentiment Analysis of collected tweets
+@st.cache
 def tweet_sentiment(tweet):
     output=[]
     for i in range(len(tweet)):
