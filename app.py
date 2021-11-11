@@ -13,7 +13,7 @@ import yfinance as yf
 #libraires for visualisation
 #import plotly.graph_objects as go
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 3})
+plt.rcParams['font.size'] = 15.0
 
 #Libraries for model building
 from tensorflow.keras.models import Sequential
@@ -33,9 +33,8 @@ from nltk.corpus import stopwords
 stop_words=stopwords.words('english')
 #from nltk.stem import WordNetLemmatizer
 import spacy
-#from collections import Counter
-nlp = spacy.load('en_core_web_sm')
-#nlp = spacy.load(r'C:\Users\Admin\anaconda3\Lib\site-packages\en_core_web_sm\en_core_web_sm-3.0.0\ner')
+#nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load(r'C:\Users\Admin\anaconda3\Lib\site-packages\en_core_web_sm\en_core_web_sm-3.0.0\ner')
 
 #-----------------------------------------------------------------------------------------
 #Getting list of stocks from nse
@@ -136,7 +135,7 @@ def model_building_prediction(neuron1, dropout_rate, x_train, y_train, epochs, b
     
     model_lstm.fit(x_train,y_train,epochs=epochs, batch_size=batch_size, verbose=0)
     
-#-----------------------------Preicton Part-----------------------------------------------------
+#-----------------------------Prediction Part-----------------------------------------------------
     x_data = data_scaled.copy()
     predicted_price_list = []
     time_steps = 30
@@ -181,17 +180,17 @@ def forecastedfigure(train_df, predicted_df):
 #Function to extract stock tweets
 @st.cache
 def get_tweets(company_name):
-     currect_date = date.today()
-     # Creating list to append tweet data to
-     tweets = []
-     # Using TwitterSearchScraper to scrape data and append tweets to list
-     # Using enumerate to get the tweet and the index (to break at certain no of tweets)
-     for i,tweet in enumerate(twitterScraper.TwitterSearchScraper('{} until:{}'.format(company_name, currect_date- timedelta(days=3))).get_items()):
-         if i>700:
-             break
-         tweets.append([tweet.date, tweet.content])
-     tweet_df =pd.DataFrame(tweets, columns=['Datetime', 'Text'])
-     return tweet_df
+    currect_date = date.today()
+    # Creating list to append tweet data to
+    tweets = []
+    # Using TwitterSearchScraper to scrape data and append tweets to list
+    # Using enumerate to get the tweet and the index (to break at certain no of tweets)
+    for i,tweet in enumerate(twitterScraper.TwitterSearchScraper('{} until:{}'.format(company_name, currect_date- timedelta(days=3))).get_items()):
+        if i>700:
+            break
+        tweets.append([tweet.date, tweet.content])
+    tweet_df =pd.DataFrame(tweets, columns=['Datetime', 'Text'])
+    return tweet_df
 
 #-----------------------------------------------------------------------------------------
 #Sentiment Analysis of collected tweets
@@ -228,9 +227,9 @@ def tweet_sentiment(tweet):
      x['compound'] = [item['compound'] for item in x['score']]
      # decide sentiment as positive, negative and neutral
      x['sentiment'] = [ 'Positive' if i >= 0.05 else 'Negative' if i <= - 0.05 else 'Neutral' for i in x['compound']]
-     fig = x['sentiment'].value_counts().plot.pie(autopct=("%.2f%%"),figsize=(1,1))
+     #fig = x['sentiment'].value_counts().plot.pie(autopct=("%.2f%%"),figsize=(1,1))
      #fig = x['sentiment'].value_counts().plot.pie(autopct="%.2f%%",figsize=(2,2), wedgeprops={'linewidth': 1.0, 'edgecolor': 'white'}, )
-     return fig
+     return x
     
 #-----------------------------------------------------------------------------------------
 #Above code deficts the user defined functions
@@ -254,7 +253,7 @@ page=st.sidebar.radio("Security Exchanges", page_name)
 best_parameters = {"SBIN":{"neuron1":40,"dropout_rate":0.1,"epochs":125,"batch_size":30},
                   "INFY":{"neuron1":40,"dropout_rate":0.1,"epochs":80,"batch_size":40},
                   "DMART":{"neuron1":60,"dropout_rate":0.0,"epochs":150,"batch_size":60},
-                  "Others":{"neuron1":60,"dropout_rate":0.2,"epochs":250,"batch_size":40}}
+                  "Others":{"neuron1":60,"dropout_rate":0.2,"epochs":150,"batch_size":100}}
 
 if page == 'NSE': 
     stocks, dict_list = nsestocklist()
@@ -277,7 +276,7 @@ else:
   
     latest_close_price = data_df.iloc[-1,3]
     st.subheader("Price Summary")
-    col1, col2, col3 = st.beta_columns([1,1,1])
+    col1, col2, col3 = st.columns([1,1,1])
     col1.write(f"Closing Price ({((data_df.index[-1]).date())})")
     col1.write(round(latest_close_price,2))
     col2.write("52 Week High")
@@ -288,7 +287,7 @@ else:
     
     st.subheader("Company Overview")
     stock_info = stockinformation(selected_stock + ".NS")
-    col1, col2, col3, col4 = st.beta_columns([1,1,1,1])
+    col1, col2, col3, col4 = st.columns([1,1,1,1])
     col1.write('Market Cap')
     col1.write(stock_info['marketCap'])
     col2.write('P/E Ratio')
@@ -310,7 +309,7 @@ else:
     
     st.subheader("Profit and Loss Summary of Last 5 Days")
     profit_data = (pctchange(data_df, 6)).style.applymap(color_negative_red)
-    col1, col2, col3 = st.beta_columns([2,3,2])
+    col1, col2, col3 = st.columns([2,3,2])
     col2.write(profit_data)
     
 #     normalisation of data
@@ -318,25 +317,29 @@ else:
     data_scaled = scaler.fit_transform(pd.DataFrame(data_df.iloc[:,3]))
     
     x_train, y_train = datapreparation(data_scaled)
-    
+   
     if selected_stock not in ['SBIN', 'INFY', 'DMART']:
-        selected_stock = "Others"
-
-    neuron1, dropout_rate,epochs, batch_size = best_parameters[selected_stock].values()
-    
+        selected_stock_rename = "Others"
+        neuron1, dropout_rate,epochs, batch_size = best_parameters[selected_stock_rename].values()
+    else:
+        neuron1, dropout_rate,epochs, batch_size = best_parameters[selected_stock].values()
+        
     predicted_value = model_building_prediction(neuron1, dropout_rate, x_train, y_train, epochs, batch_size, data_scaled, scaler, 10)
     st.write("___________________________________________________________")
     
     st.subheader("Predictions")
     forecast_df = forecastedfigure(data_df, predicted_value)
-    c1, c2=st.beta_columns([1,2])
+    c1, c2=st.columns([1,2])
     c1.dataframe(predicted_value)
     c2.line_chart(forecast_df)
     st.write("___________________________________________________________")
     
-    # Stock Sentiment analysis
+#     Stock Sentiment analysis
     st.subheader('Stock Sentiment Analysis')
     df_tweet = get_tweets(dict_list[selected_stock])
     tweet_text = df_tweet['Text']
-    senti_fig = tweet_sentiment(tweet_text)
-    st.pyplot(senti_fig.figure)
+    x = tweet_sentiment(tweet_text)
+    fig, ax = plt.subplots()
+    ax.pie(x['sentiment'].value_counts(), labels=x['sentiment'].value_counts().index, autopct='%.2f%%')
+    c1, c2, c3 = st.columns([1,2,1])
+    c2.pyplot(fig)
