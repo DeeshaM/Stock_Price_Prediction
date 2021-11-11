@@ -11,5 +11,6 @@ matplotlib==3.4.3
 scikit_learn==1.0.1
 tensorflow-cpu==2.5.0
 vaderSentiment==3.3.2
-keras_nightly==2.5.0.dev2021032900
-keras==2.7.0
+autopep8==1.5.4
+ipykernel==5.3.4
+sklearn==0.24.2
