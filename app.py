@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from datetime import date, timedelta
 
 #Libraries for nse and bse data collection
-from nsepy import get_history
+#from nsepy import get_history
 from nsetools import Nse
 import yfinance as yf
 
